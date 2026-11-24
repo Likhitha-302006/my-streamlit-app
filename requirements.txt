@@ -3,3 +3,5 @@ yfinance
 pandas
 plotly
 prophet
+scikit-learn
+numpy
