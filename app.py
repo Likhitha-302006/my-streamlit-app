@@ -122,8 +122,6 @@ footer {
 
 # ------------------------------------------------
 # Global dark theme for all Plotly charts
-# (replaces the old fig.update_layout, which crashed
-#  because `fig` did not exist yet)
 # ------------------------------------------------
 nexus_template = go.layout.Template(pio.templates["plotly_dark"])
 nexus_template.layout.update(
@@ -196,7 +194,6 @@ if st.button("Load Stock Data"):
 
         # Latest price and daily return
         col1, col2 = st.columns(2)
-
         col1.metric(
             "Latest Closing Price",
             f"₹{float(close.iloc[-1]):,.2f}"
@@ -310,7 +307,6 @@ if st.button("Load Stock Data"):
                     combined_history = history_record
             else:
                 combined_history = history_record
-            
 
             combined_history = combined_history.reindex(
                 columns=TRACKER_COLUMNS
@@ -735,7 +731,7 @@ else:
             "predicted_direction",
         ]
 
-        if not all(col in history.columns for col in required):
+        if not all(column in history.columns for column in required):
             st.error(
                 "The prediction history CSV has an invalid header. "
                 "Back up the CSV before correcting its columns."
@@ -743,9 +739,9 @@ else:
 
         else:
             # Add missing columns
-            for col in TRACKER_COLUMNS:
-                if col not in history.columns:
-                    history[col] = pd.NA
+            for column in TRACKER_COLUMNS:
+                if column not in history.columns:
+                    history[column] = pd.NA
 
             history["latest_session"] = pd.to_datetime(
                 history["latest_session"],
@@ -762,12 +758,12 @@ else:
                 errors="coerce"
             )
 
-            for col in [
+            for column in [
                 "actual_direction",
                 "evaluation_date",
                 "evaluation_status"
             ]:
-                history[col] = history[col].astype("object")
+                history[column] = history[column].astype("object")
 
             history["symbol"] = (
                 history["symbol"].fillna("").astype(str).str.strip()
@@ -875,12 +871,12 @@ else:
                 )
 
             # Normalize empty values and save consistent column order.
-            for col in [
+            for column in [
                 "actual_direction",
                 "evaluation_date",
                 "evaluation_status",
             ]:
-                history[col] = history[col].fillna("").astype(str)
+                history[column] = history[column].fillna("").astype(str)
 
             history = history.reindex(columns=TRACKER_COLUMNS)
             history.to_csv(HISTORY_FILE, index=False)
